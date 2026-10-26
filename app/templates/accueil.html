@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block contenu %}
+<section class="carte">
+  <h1>Qu'est-ce que tu nous envoies ?</h1>
+  <div class="choix">
+    <a class="bouton bouton-grand" href="/photos">📸 Des photos</a>
+    <a class="bouton bouton-grand bouton-second" href="/citation">💬 Une citation</a>
+  </div>
+  <p class="petit"><a href="/prenom">Ce n'est pas toi, {{ prenom }} ? Change ton prénom</a></p>
+</section>
+{% endblock %}

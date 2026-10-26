@@ -1,0 +1,57 @@
+# Kahoot des fêtes — déploiement Unraid 7 (plugin Compose Manager)
+#
+# - « app » : l'application FastAPI
+# - « tailscale » : le proxy HTTPS public (Tailscale Funnel), dédié à ce conteneur seulement.
+#   L'app partage le réseau du conteneur tailscale (network_mode), donc Funnel la joint
+#   sur 127.0.0.1:8000 et rien d'autre de votre serveur n'est exposé.
+
+name: kahoot-fetes
+
+services:
+  tailscale:
+    image: tailscale/tailscale:stable
+    container_name: kahoot-fetes-tailscale
+    hostname: kahoot-fetes
+    environment:
+      TS_AUTHKEY: ${TS_AUTHKEY:?Ajoutez TS_AUTHKEY dans le fichier .env}
+      TS_HOSTNAME: kahoot-fetes
+      TS_STATE_DIR: /var/lib/tailscale
+      TS_SERVE_CONFIG: /config/serve.json
+      TS_USERSPACE: "true"
+    volumes:
+      - /mnt/user/appdata/kahoot-fetes/tailscale/state:/var/lib/tailscale
+      - /mnt/user/appdata/kahoot-fetes/tailscale/config:/config:ro
+    ports:
+      # Accès sur le réseau local (port 8080 déjà utilisé sur le serveur)
+      - "8090:8000"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  app:
+    build: .
+    image: kahoot-fetes:latest
+    container_name: kahoot-fetes
+    network_mode: service:tailscale
+    depends_on:
+      - tailscale
+    env_file: .env
+    volumes:
+      - /mnt/user/appdata/kahoot-fetes/data:/app/data
+    restart: unless-stopped
+    # Durcissement : lecture seule sauf data/ et /tmp, aucun privilège
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 200
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3

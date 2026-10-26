@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block titre %}Admin · Kahoot des fêtes{% endblock %}
+{% block classe_main %}large{% endblock %}
+{% block contenu %}
+<section class="barre-admin">
+  <h1>Soumissions <span class="compteur">{{ soumissions|length }}</span></h1>
+  <form method="get" action="/admin" class="filtres">
+    <select name="auteur" aria-label="Filtrer par ami">
+      <option value="">Tous les amis</option>
+      {% for a in auteurs %}<option value="{{ a }}" {% if a == filtre_auteur %}selected{% endif %}>{{ a }}</option>{% endfor %}
+    </select>
+    <select name="type" aria-label="Filtrer par type">
+      <option value="">Tous les types</option>
+      <option value="photo" {% if filtre_type == 'photo' %}selected{% endif %}>Photos</option>
+      <option value="citation" {% if filtre_type == 'citation' %}selected{% endif %}>Citations</option>
+    </select>
+    <button type="submit" class="bouton bouton-petit">Filtrer</button>
+  </form>
+  <div class="actions-admin">
+    <form method="post" action="/admin/export">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button type="submit" class="bouton bouton-petit">⬇️ Exporter les retenus ({{ nb_retenus }})</button>
+    </form>
+    <form method="post" action="/admin/deconnexion">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button type="submit" class="bouton bouton-petit bouton-second">Déconnexion</button>
+    </form>
+  </div>
+</section>
+
+<section class="galerie">
+  {% for s in soumissions %}
+  <article class="tuile {% if s.retenu %}retenue{% endif %}" id="s{{ s.id }}">
+    {% if s.type == 'photo' %}
+      <a href="/media/{{ s.fichier }}" target="_blank" rel="noopener"><img src="/media/{{ s.fichier }}?mini=true" alt="Photo envoyée par {{ s.auteur }}" loading="lazy"></a>
+    {% else %}
+      <blockquote>« {{ s.citation }} »<footer>— {{ s.personne_citee }}</footer></blockquote>
+    {% endif %}
+    <p class="meta">#{{ s.id }} · {{ 'Photo' if s.type == 'photo' else 'Citation' }} de <strong>{{ s.auteur }}</strong></p>
+
+    <form method="post" action="/admin/soumission/{{ s.id }}/modifier" class="formulaire compact">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="filtre_auteur" value="{{ filtre_auteur }}">
+      <input type="hidden" name="filtre_type" value="{{ filtre_type }}">
+      {% if s.type == 'photo' %}
+        <label>Description<textarea name="description" rows="2" maxlength="500">{{ s.description }}</textarea></label>
+      {% else %}
+        <label>Citation<textarea name="citation" rows="2" maxlength="1000">{{ s.citation }}</textarea></label>
+        <label>Personne<input name="personne" maxlength="60" value="{{ s.personne_citee }}"></label>
+        <label>Contexte<textarea name="contexte" rows="2" maxlength="500">{{ s.contexte }}</textarea></label>
+      {% endif %}
+      <button type="submit" class="bouton bouton-petit bouton-second">Enregistrer</button>
+    </form>
+
+    <div class="actions-tuile">
+      <form method="post" action="/admin/soumission/{{ s.id }}/retenir">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="filtre_auteur" value="{{ filtre_auteur }}">
+        <input type="hidden" name="filtre_type" value="{{ filtre_type }}">
+        <button type="submit" class="bouton bouton-petit">{{ '★ Retenu' if s.retenu else '☆ Retenir' }}</button>
+      </form>
+      <form method="post" action="/admin/soumission/{{ s.id }}/supprimer" class="form-supprimer">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="filtre_auteur" value="{{ filtre_auteur }}">
+        <input type="hidden" name="filtre_type" value="{{ filtre_type }}">
+        <button type="submit" class="bouton bouton-petit bouton-danger">Supprimer</button>
+      </form>
+    </div>
+  </article>
+  {% else %}
+  <p>Aucune soumission pour l'instant.</p>
+  {% endfor %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/admin.js" defer></script>{% endblock %}

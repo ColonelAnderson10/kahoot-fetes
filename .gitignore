@@ -1,0 +1,15 @@
+# Secrets et données (ne jamais versionner)
+.env
+data/
+tailscale/state/
+tailscale/config/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Divers
+*.log
+sauvegardes/

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block contenu %}
+<section class="carte">
+  <h1>📸 Tes photos</h1>
+  <p>Sélectionne autant de photos que tu veux d'un coup (JPEG, PNG, WEBP ou HEIC). Ajoute une description si tu veux, puis envoie : elles partent plusieurs à la fois. Garde la page ouverte jusqu'à la fin.</p>
+  <form method="post" action="/photos" enctype="multipart/form-data" class="formulaire" id="form-photos" data-taille-max="{{ taille_max_mo }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label class="bouton bouton-second zone-fichiers" for="photos">Choisir des photos</label>
+    <input id="photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif" multiple required class="cache-visuel">
+    <ul id="liste-photos" class="liste-photos"></ul>
+    <div id="progression" class="progression" hidden>
+      <progress id="barre" value="0" max="1"></progress>
+      <p id="etat" aria-live="polite"></p>
+    </div>
+    <ul id="erreurs" class="erreurs" aria-live="polite"></ul>
+    <button type="submit" class="bouton" id="envoyer">Envoyer</button>
+  </form>
+  <p class="petit"><a href="/">← Retour</a></p>
+</section>
+{% endblock %}
+{% block scripts %}<script src="/static/envoi.js" defer></script>{% endblock %}

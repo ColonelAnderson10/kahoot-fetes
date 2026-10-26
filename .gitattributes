@@ -1,0 +1,8 @@
+# Les scripts doivent garder des fins de ligne Unix pour fonctionner sur Unraid
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+
+# Fichiers réservés au dépôt privé (exclus de la version publique)
+scripts/publier_public.ps1 export-ignore

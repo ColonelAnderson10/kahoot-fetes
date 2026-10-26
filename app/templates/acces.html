@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenu %}
+<section class="carte">
+  <h1>Bienvenue !</h1>
+  <p>Entre le code secret qu'on t'a donné pour envoyer tes photos et citations gênantes.</p>
+  <form method="post" action="/acces" class="formulaire">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="code">Code d'accès</label>
+    <input id="code" name="code" type="password" required autocomplete="off" autofocus maxlength="200">
+    <button type="submit" class="bouton">Entrer</button>
+  </form>
+</section>
+{% endblock %}

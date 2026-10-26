@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>{% block titre %}Kahoot des fêtes{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="entete">
+    <a href="/" class="logo">🎄 Kahoot des fêtes</a>
+    {% if prenom %}<span class="salut">Salut {{ prenom }} !</span>{% endif %}
+  </header>
+  <main class="contenu {% block classe_main %}{% endblock %}">
+    {% if erreur %}<p class="alerte" role="alert">{{ erreur }}</p>{% endif %}
+    {% block contenu %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

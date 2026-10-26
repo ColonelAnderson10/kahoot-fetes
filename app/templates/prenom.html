@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenu %}
+<section class="carte">
+  <h1>C'est qui ?</h1>
+  <p>Ton prénom sera mémorisé pour tes prochains envois.</p>
+  <form method="post" action="/prenom" class="formulaire">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="prenom">Ton prénom</label>
+    <input id="prenom" name="prenom" type="text" required maxlength="40" autocomplete="given-name" value="{{ prenom or '' }}" autofocus>
+    <button type="submit" class="bouton">Continuer</button>
+  </form>
+</section>
+{% endblock %}

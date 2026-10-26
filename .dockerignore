@@ -1,0 +1,15 @@
+# Ne jamais copier les secrets ni les données dans l'image
+.env
+data/
+tailscale/
+sauvegardes/
+
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+tests/
+scripts/
+*.md
+docker-compose*.yml

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block contenu %}
+<section class="carte centre">
+  <p class="emoji-grand">🎉</p>
+  <h1>Merci !</h1>
+  {% if photos %}<p>{{ photos }} photo{{ 's' if photos > 1 }} bien reçue{{ 's' if photos > 1 }}.</p>{% endif %}
+  {% if citation %}<p>Ta citation est bien reçue.</p>{% endif %}
+  <p>Ça va faire un excellent Kahoot. 😈</p>
+  <div class="choix">
+    <a class="bouton" href="/photos">Envoyer d'autres photos</a>
+    <a class="bouton bouton-second" href="/citation">Envoyer une citation</a>
+  </div>
+</section>
+{% endblock %}
